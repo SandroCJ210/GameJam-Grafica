@@ -26,9 +26,9 @@ public class Player : Gambler
         GameManager.Instance.SetEndofTurn();
     }
 
-    public override int DrawCard()
+    public override void DrawCard()
     {
-        return 0;
+        
     }
 
     public override void Pass()

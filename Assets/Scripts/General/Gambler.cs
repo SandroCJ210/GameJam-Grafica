@@ -21,7 +21,7 @@ public abstract class Gambler : MonoBehaviour
     
     public abstract void PlayTurn();
     //Request card from GameManager
-    public abstract int DrawCard();
+    public abstract void DrawCard();
     public abstract void Pass();
     //Receive new card
     public virtual void ReceiveCard(int cardValue)

@@ -38,14 +38,13 @@ public class Wizard : Gambler
         GameManager.Instance.SetEndofTurn();
     }
 
-    public override int DrawCard()
+    public override void DrawCard()
     {
         int card = probabilityManager.GetNextCard(Target.Wizard, player.areEyesOpen, totalCardsValue);
         deck.Add(card);
 
         totalCardsValue += card;
-
-        return card;
+        
     }
 
     public override void Pass()
