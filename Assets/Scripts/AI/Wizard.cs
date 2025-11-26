@@ -22,6 +22,7 @@ public class Wizard : Gambler
 
     public override void PlayTurn()
     {
+        Debug.Log("Wizard Turn");
         bool eyesOpen = player.areEyesOpen;
         int mageTotal = totalCardsValue;
         int playerVisible = eyesOpen ? player.TotalCardsValue : EstimatePlayerValue();
@@ -33,6 +34,8 @@ public class Wizard : Gambler
             DrawCard();
         else
             Pass();
+        
+        GameManager.Instance.SetEndofTurn();
     }
 
     public override int DrawCard()
@@ -145,6 +148,7 @@ public class Wizard : Gambler
 
         return estimate;
     }
+    
 
 }
 

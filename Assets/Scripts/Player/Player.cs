@@ -22,7 +22,8 @@ public class Player : Gambler
     
     public override void PlayTurn()
     {
-        
+        Debug.Log("Player Turn");
+        GameManager.Instance.SetEndofTurn();
     }
 
     public override int DrawCard()
