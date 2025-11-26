@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Wizard : Gambler
@@ -9,7 +10,7 @@ public class Wizard : Gambler
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        deck = new int[0];
+        deck = new List<int>();
         totalCardsValue = 0;
     }
 
@@ -19,7 +20,7 @@ public class Wizard : Gambler
         
     }
 
-    protected override void PlayTurn()
+    public override void PlayTurn()
     {
         bool eyesOpen = player.areEyesOpen;
         int mageTotal = totalCardsValue;
@@ -34,19 +35,17 @@ public class Wizard : Gambler
             Pass();
     }
 
-    protected override void DrawCard()
+    public override int DrawCard()
     {
         int card = probabilityManager.GetNextCard(Target.Wizard, player.areEyesOpen, totalCardsValue);
-
-        int[] newDeck = new int[deck.Length + 1];
-        deck.CopyTo(newDeck, 0);
-        newDeck[deck.Length] = card;
-        deck = newDeck;
+        deck.Add(card);
 
         totalCardsValue += card;
+
+        return card;
     }
 
-    protected override void Pass()
+    public override void Pass()
     {
         
     }

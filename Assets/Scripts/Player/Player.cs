@@ -5,7 +5,8 @@ public class Player : Gambler
     public bool areEyesOpen { get; private set; } = true;
     public int TotalCardsValue => totalCardsValue;
 
-    public int deckLength => deck != null ? deck.Length : 0;
+    public int deckLength => deck != null ? deck.Count : 0;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -19,18 +20,20 @@ public class Player : Gambler
         
     }
     
-    protected override void PlayTurn()
+    public override void PlayTurn()
     {
         
     }
 
-    protected override void DrawCard()
+    public override int DrawCard()
     {
-        
+        return 0;
     }
 
-    protected override void Pass()
+    public override void Pass()
     {
         
     }
+    
+    
 }
