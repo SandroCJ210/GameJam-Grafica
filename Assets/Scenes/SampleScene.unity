@@ -369,7 +369,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 95cafe3a2921f524fb8a90f901dec4ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameManager
-  numberOfCards: 2
+  numberOfCards: 11
   numberOfRounds: 2
   cardPrefabs:
   - {fileID: 1015234467356231198, guid: 5168079ac8757cc4e8c82a269b5e6a16, type: 3}
