@@ -12,6 +12,65 @@ public class Wizard : Gambler
     {
         deck = new List<int>();
         totalCardsValue = 0;
+        
+        // Inicializar componentes de dificultad si no están asignados
+        InitializeDifficultyComponents();
+    }
+    
+    /// <summary>
+    /// Inicializa los componentes de dificultad si no están asignados en el Inspector.
+    /// </summary>
+    private void InitializeDifficultyComponents()
+    {
+        // Buscar Player si no está asignado
+        if (player == null)
+        {
+            player = FindFirstObjectByType<Player>();
+            if (player == null)
+            {
+                Debug.LogError("Wizard: No se encontró el componente Player!");
+            }
+            else
+            {
+                Debug.Log("Wizard: Player encontrado automáticamente.");
+            }
+        }
+        
+        // Buscar ProbabilityManager si no está asignado
+        if (probabilityManager == null)
+        {
+            probabilityManager = GetComponent<ProbabilityManager>();
+            if (probabilityManager == null)
+            {
+                probabilityManager = FindFirstObjectByType<ProbabilityManager>();
+            }
+            if (probabilityManager == null)
+            {
+                Debug.LogWarning("Wizard: No se encontró ProbabilityManager. El mago funcionará sin influencia de dificultad en las cartas.");
+            }
+            else
+            {
+                Debug.Log("Wizard: ProbabilityManager encontrado automáticamente.");
+            }
+        }
+        
+        // Buscar MageDifficultyConfig si no está asignado
+        // Intentar obtenerlo del ProbabilityManager si lo tiene
+        if (difficulty == null && probabilityManager != null)
+        {
+            // Usar reflexión para acceder al config del ProbabilityManager
+            // O mejor: agregar un método público en ProbabilityManager
+            Debug.LogWarning("Wizard: MageDifficultyConfig no está asignado directamente. Asegúrate de asignarlo en el Inspector para que el mago use la dificultad correcta.");
+        }
+        
+        // Validar que los componentes críticos estén asignados
+        if (player == null)
+        {
+            Debug.LogError("Wizard: Player no está asignado y no se pudo encontrar. El mago no funcionará correctamente.");
+        }
+        
+        // Log de estado final
+        Debug.Log($"Wizard inicializado - Player: {(player != null ? "✓" : "✗")}, ProbabilityManager: {(probabilityManager != null ? "✓" : "✗")}, Difficulty: {(difficulty != null ? "✓" : "✗")}");
     }
 
     // Update is called once per frame
@@ -40,20 +99,37 @@ public class Wizard : Gambler
 
     public override void DrawCard()
     {
-        int card = probabilityManager.GetNextCard(Target.Wizard, player.areEyesOpen, totalCardsValue);
-        deck.Add(card);
-
-        totalCardsValue += card;
-        
+        // Usar GameManager para robar carta (esto también verifica bust y registra decisiones)
+        GameManager.Instance.DealCard(Turn.WizardTurn);
+        gamblerChoice = GamblerChoice.Draw;
+        Debug.Log($"Mago robó carta. Nuevo total: {totalCardsValue}");
     }
 
     public override void Pass()
     {
-        
+        gamblerChoice = GamblerChoice.Pass;
+        Debug.Log("Mago pasa.");
     }
+
+    public int TotalCardsValue => totalCardsValue;
 
     private bool DecideAction(int mageTotal, int playerVisible, bool eyesOpen)
     {
+        // REGLA CRÍTICA: Si el mago tiene 21 o más, SIEMPRE debe pasar
+        // Robar otra carta solo puede empeorar su situación (bust o igual)
+        if (mageTotal >= 21)
+        {
+            Debug.Log($"Mago tiene {mageTotal}. Pasando automáticamente (no puede mejorar robando).");
+            return false; // Pass
+        }
+        
+        // Si tiene 20, también debería pasar (solo puede empeorar)
+        if (mageTotal == 20)
+        {
+            Debug.Log($"Mago tiene 20. Pasando (solo puede empeorar robando).");
+            return false; // Pass
+        }
+        
         // CASO 1: JUGADOR CON OJOS ABIERTOS
         if (eyesOpen)
         {

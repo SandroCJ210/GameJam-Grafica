@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b6d1f8ab514d664fbd2ec60f8616e07, type: 3}
+  m_Name: MageDifficulty Config
+  m_EditorClassIdentifier: Assembly-CSharp::MageDifficultyConfig
+  boldness: 0.3
+  mistakeChanceEyesClosed: 0.2
+  goodCard_Player_EyesOpen: 0.5
+  goodCard_Player_EyesClosed: 0.4
+  goodCard_Wizard_EyesOpen: 0.5
+  goodCard_Wizard_EyesClosed: 0.6

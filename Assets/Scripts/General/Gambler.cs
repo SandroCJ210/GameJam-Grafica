@@ -30,6 +30,14 @@ public abstract class Gambler : MonoBehaviour
         totalCardsValue += cardValue; 
     }
 
-    
+    /// <summary>
+    /// Resetea el mazo y el total de cartas del jugador.
+    /// </summary>
+    public virtual void ResetDeck()
+    {
+        deck.Clear();
+        totalCardsValue = 0;
+        gamblerChoice = GamblerChoice.None;
+    }
 
 }

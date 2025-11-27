@@ -10,7 +10,7 @@ public enum Target
 public class ProbabilityManager : MonoBehaviour
 {
     [SerializeField] private MageDifficultyConfig config;
-    [SerializeField] private int copiesPerValue = 4; // cuántas copias de cada carta (1–11)
+    [SerializeField] private int copiesPerValue = 4; // cuï¿½ntas copias de cada carta (1ï¿½11)
 
     private List<int> remainingCards;
 
@@ -37,8 +37,8 @@ public class ProbabilityManager : MonoBehaviour
 
     /// <summary>
     /// Devuelve el valor de la carta, considerando:
-    /// - Quién roba (Player / Wizard)
-    /// - Si los ojos del jugador están abiertos
+    /// - Quiï¿½n roba (Player / Wizard)
+    /// - Si los ojos del jugador estï¿½n abiertos
     /// - El total actual del que roba
     /// - Las cartas que quedan en el mazo
     /// </summary>
@@ -46,11 +46,11 @@ public class ProbabilityManager : MonoBehaviour
     {
         if (remainingCards == null || remainingCards.Count == 0)
         {
-            Debug.LogWarning("Mazo vacío, reconstruyendo deck...");
+            Debug.LogWarning("Mazo vacï¿½o, reconstruyendo deck...");
             BuildDeck();
         }
 
-        // 1. Probabilidad de carta buena según dificultad
+        // 1. Probabilidad de carta buena segï¿½n dificultad
         float probGood;
 
         if (target == Target.Player)
@@ -68,14 +68,14 @@ public class ProbabilityManager : MonoBehaviour
 
         bool wantGoodCard = Random.value < probGood;
 
-        // 2. Construir pools de cartas buenas y malas según el total actual
+        // 2. Construir pools de cartas buenas y malas segï¿½n el total actual
         List<int> goodPool = GetGoodPool(currentTotal);
         List<int> badPool = GetBadPool(currentTotal);
 
-        // Asegurarnos de que al menos tengamos algún pool con cartas
+        // Asegurarnos de que al menos tengamos algï¿½n pool con cartas
         if (goodPool.Count == 0 && badPool.Count == 0)
         {
-            // Si por alguna razón no hay pools válidos, elegimos cualquiera del mazo
+            // Si por alguna razï¿½n no hay pools vï¿½lidos, elegimos cualquiera del mazo
             int fallbackIndex = Random.Range(0, remainingCards.Count);
             int fallbackCard = remainingCards[fallbackIndex];
             remainingCards.RemoveAt(fallbackIndex);
@@ -94,7 +94,7 @@ public class ProbabilityManager : MonoBehaviour
         }
         else
         {
-            // Si el pool "ideal" está vacío, usamos el otro
+            // Si el pool "ideal" estï¿½ vacï¿½o, usamos el otro
             chosenPool = goodPool.Count > 0 ? goodPool : badPool;
         }
 
@@ -102,7 +102,7 @@ public class ProbabilityManager : MonoBehaviour
         int poolIndex = Random.Range(0, chosenPool.Count);
         int chosenValue = chosenPool[poolIndex];
 
-        // 4. Quitamos ESA carta específica del mazo
+        // 4. Quitamos ESA carta especï¿½fica del mazo
         int indexInDeck = remainingCards.IndexOf(chosenValue);
         if (indexInDeck >= 0)
         {
@@ -110,7 +110,7 @@ public class ProbabilityManager : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Carta elegida no encontrada en el mazo. Esto no debería pasar.");
+            Debug.LogWarning("Carta elegida no encontrada en el mazo. Esto no deberï¿½a pasar.");
         }
 
         return chosenValue;
@@ -125,7 +125,7 @@ public class ProbabilityManager : MonoBehaviour
 
         foreach (int card in remainingCards)
         {
-            // Lógica simple: buena = ayuda a acercarse a 21 sin matar
+            // Lï¿½gica simple: buena = ayuda a acercarse a 21 sin matar
             int newTotal = total + card;
 
             // Consideramos "buena" la carta que:
@@ -137,7 +137,7 @@ public class ProbabilityManager : MonoBehaviour
             }
         }
 
-        // Si ninguna cumple ese criterio, aflojamos la condición:
+        // Si ninguna cumple ese criterio, aflojamos la condiciï¿½n:
         if (pool.Count == 0)
         {
             foreach (int card in remainingCards)
@@ -164,7 +164,7 @@ public class ProbabilityManager : MonoBehaviour
 
             // Consideramos "mala" la carta que:
             // - te hace pasarte de 21
-            // - o casi no mejora tu situación 
+            // - o casi no mejora tu situaciï¿½n 
             bool busts = newTotal > 21;
             bool uselessWhenLow = total <= 11 && card <= 2;
 

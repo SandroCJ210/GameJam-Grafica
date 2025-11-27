@@ -45,6 +45,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Wizard
   gamblerChoice: 0
-  player: {fileID: 0}
+  player: {fileID: 8511669590781527479, guid: 1aaee5bd93b3ae749a0d6a80ea766d8a, type: 3}
   probabilityManager: {fileID: 0}
   difficulty: {fileID: 0}
