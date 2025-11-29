@@ -10,14 +10,23 @@ public enum Turn
     PlayerTurn = 1
 }
 
+public enum Winner
+{
+    Wizard,
+    Player,
+    None
+}
+
 public class GameManager : PersistentSingleton<GameManager>
 {
     [SerializeField] private int numberOfCards;
     [SerializeField] private int numberOfRounds;
     [SerializeField] private List<GameObject> cardPrefabs;
-
-    private Player _player;
-    private Wizard _wizard;
+    
+    [HideInInspector]
+    public Player _player;
+    [HideInInspector]
+    public Wizard _wizard;
 
     private List<int> _playerDeck = new List<int>();
     private List<int> _wizardDeck = new List<int>();
@@ -29,6 +38,7 @@ public class GameManager : PersistentSingleton<GameManager>
     private bool _isRoundOver = false;
     private bool hasFinishedTurn = false;
     private Turn _currentTurn = Turn.PlayerTurn;
+    private Winner winner = Winner.None;
 
 
     public List<int> PlayerDeck
@@ -42,6 +52,7 @@ public class GameManager : PersistentSingleton<GameManager>
         get => new List<int>(_wizardDeck);
         private set => _wizardDeck = value;
     }
+    
 
 
     private void Start()
@@ -59,11 +70,15 @@ public class GameManager : PersistentSingleton<GameManager>
 
         _player = GameObject.FindGameObjectWithTag("Player").GetComponent<Player>();
         _wizard = GameObject.FindGameObjectWithTag("Wizard").GetComponent<Wizard>();
+        
+        
     }
 
     private void StartRound()
     {
         _isRoundOver = false;
+        _currentTurn = Turn.PlayerTurn;              
+        UIManager.Instance.SetTurnText(_currentTurn);
         ResetRound();
         ShuffleDeck();
         DealCard(Turn.WizardTurn);
@@ -103,16 +118,32 @@ public class GameManager : PersistentSingleton<GameManager>
 
     public int PopCard()
     {
+        if (_drawDeck.Count == 0)
+        {
+            Debug.LogWarning("El mazo está vacío!");
+            return 0;
+        }
         int lastCard = _drawDeck.Pop();
-        //TODO: Reproduce the audio feedback if is player's turn.
         return lastCard;
     }
+    
+    public int PeekNextCard()
+    {
+        if (_drawDeck.Count == 0)
+        {
+            Debug.LogWarning("El mazo está vacío!");
+            return 0;
+        }
+        return _drawDeck.Peek(); 
+    }
+    
 
     public void SwitchTurn()
     {
         _currentTurn = _currentTurn == Turn.PlayerTurn
             ? Turn.WizardTurn
             : Turn.PlayerTurn;
+        UIManager.Instance.SetTurnText(_currentTurn);
     }
 
     private IEnumerator Round()
@@ -152,20 +183,78 @@ public class GameManager : PersistentSingleton<GameManager>
             currentRound++;
         }
 
+        ResetGame();
     }
 
     public void SetEndofTurn()
     {
         hasFinishedTurn = true;
     }
+    
     public void DecideRoundWinner()
     {
-
+        int playerTotal = _player.TotalCardsValue;
+        int wizardTotal = _wizard.TotalCardsValue;
+        
+        string winner = "";
+        string reason = "";
+        
+        if (playerTotal > 21)
+        {
+            winner = "Mago";
+            reason = $"El jugador se pasó de 21 (Total: {playerTotal})";
+        }
+        else if (wizardTotal > 21)
+        {
+            winner = "Jugador";
+            reason = $"El mago se pasó de 21 (Total: {wizardTotal})";
+        }
+        else if (playerTotal > 21 && wizardTotal > 21)
+        {
+            winner = "Empate";
+            reason = "Ambos se pasaron de 21";
+        }
+        else
+        {
+            int playerDistance = Mathf.Abs(21 - playerTotal);
+            int wizardDistance = Mathf.Abs(21 - wizardTotal);
+            
+            if (playerDistance < wizardDistance)
+            {
+                winner = "Jugador";
+                reason = $"Jugador más cercano a 21 ({playerTotal} vs {wizardTotal})";
+            }
+            else if (wizardDistance < playerDistance)
+            {
+                winner = "Mago";
+                reason = $"Mago más cercano a 21 ({wizardTotal} vs {playerTotal})";
+            }
+            else
+            {
+                winner = "Empate";
+                reason = $"Ambos tienen el mismo total ({playerTotal})";
+            }
+        }
+        
+        
     }
 
     public void ResetRound()
     {
-        //_player.resetDeck();
-        //_wizard.resetDeck();
+        if (_player != null)
+        {
+            _player.ResetDeck();
+        }
+        if (_wizard != null)
+        {
+            _wizard.ResetDeck();
+        }
     }
+
+    public void ResetGame()
+    {
+        winner = Winner.None;
+    }
+    
+
 }

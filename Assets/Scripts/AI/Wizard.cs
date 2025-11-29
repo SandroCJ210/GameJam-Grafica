@@ -16,7 +16,7 @@ public class Wizard : Gambler
 
         if (player == null)
         {
-            player = FindFirstObjectByType<Player>();
+            player = GameManager.Instance._player;
         }
     }
 

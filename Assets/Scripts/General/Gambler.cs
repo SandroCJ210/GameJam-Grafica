@@ -13,6 +13,7 @@ public abstract class Gambler : MonoBehaviour
     protected int totalCardsValue;
     protected int money;
     public GamblerChoice gamblerChoice = GamblerChoice.None;
+    public int TotalCardsValue => totalCardsValue;
     
     public List<int> Deck
     {
