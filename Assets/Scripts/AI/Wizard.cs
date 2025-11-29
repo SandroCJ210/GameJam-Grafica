@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,6 +10,8 @@ public class Wizard : Gambler
     [Range(0f, 1f)] public float boldness = 0.3f;
     [Range(0f, 1f)] public float mistakeChanceEyesClosed = 0.2f;
 
+    private bool isTakingTurn = false;
+
     void Start()
     {
         deck = new List<int>();
@@ -16,13 +19,27 @@ public class Wizard : Gambler
 
         if (player == null)
         {
-            player = GameManager.Instance._player;
+            player = FindFirstObjectByType<Player>();
         }
     }
 
     public override void PlayTurn()
     {
+        if (!isTakingTurn)
+        {
+            StartCoroutine(WizardTurnRoutine());
+        }
+    }
+
+    private IEnumerator WizardTurnRoutine()
+    {
+        isTakingTurn = true;
+
         Debug.Log("=== TURNO DEL MAGO ===");
+
+        // Esperar entre 3 y 5 segundos antes de tomar la decisión
+        float waitTime = Random.Range(3f, 5f);
+        yield return new WaitForSeconds(waitTime);
 
         bool eyesOpen = player.areEyesOpen;
         int mageTotal = totalCardsValue;
@@ -31,11 +48,16 @@ public class Wizard : Gambler
         bool doHit = DecideAction(mageTotal, playerVisible, eyesOpen);
 
         if (doHit)
+        {
             DrawCard();
+        }
         else
+        {
             Pass();
+        }
 
         GameManager.Instance.SetEndofTurn();
+        isTakingTurn = false;
     }
 
     public override void DrawCard()
@@ -53,9 +75,8 @@ public class Wizard : Gambler
 
     private bool DecideAction(int mageTotal, int playerVisible, bool eyesOpen)
     {
-        
         if (mageTotal >= 20)
-            return false; 
+            return false;
 
         // --- OJOS ABIERTOS ---
         if (eyesOpen)
@@ -87,7 +108,6 @@ public class Wizard : Gambler
             baseDecision = Random.value < hitProb;
         }
 
-        
         if (Random.value < mistakeChanceEyesClosed)
             baseDecision = !baseDecision;
 

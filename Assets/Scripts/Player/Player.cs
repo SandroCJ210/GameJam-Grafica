@@ -5,7 +5,6 @@ using UnityEngine;
 public class Player : Gambler
 {
     public bool areEyesOpen { get; private set; } = true;
-    public int TotalCardsValue => totalCardsValue;
     public int deckLength => deck != null ? deck.Count : 0;
 
     private bool isTakingTurn = false;
