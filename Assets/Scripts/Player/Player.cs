@@ -10,20 +10,29 @@ public class Player : Gambler
     private bool isTakingTurn = false;
     private bool eyesChoiceDone = false;
     private bool actionChoiceDone = false;
+    
+    [SerializeField] private WizardAnimController wizardAnimController;
 
     public override void PlayTurn()
     {
         if (!isTakingTurn)
         {
+            
             Debug.Log("Player Turn");
+            for (int i = 0; i < deck.Count; i++)
+            {
+                Debug.Log(deck[i]);
+            }
             StartCoroutine(PlayerTurnRoutine());
         }
+        
+        
     }
 
     public void Update()
     {
-        Debug.Log("EYES" + areEyesOpen);
-        Debug.Log("CHOICE" + gamblerChoice);
+        /*Debug.Log("EYES" + areEyesOpen);
+        Debug.Log("CHOICE" + gamblerChoice);*/
     }
 
     private IEnumerator PlayerTurnRoutine()
@@ -55,8 +64,17 @@ public class Player : Gambler
         }
 
         areEyesOpen = open;
+        UIManager.Instance.SetPlayerCardsVisibility(open); 
+        
+        if (wizardAnimController != null)
+        {
+            // Si el player abre los ojos → EyesClosed = false
+            // Si el player cierra los ojos  → EyesClosed = true
+            wizardAnimController.SetEyesClosed(!open);
+        }
         eyesChoiceDone = true;
     }
+
     
     public void SetActionChoice(GamblerChoice choice)
     {
@@ -88,5 +106,14 @@ public class Player : Gambler
     {
         
     }
+    
+    public void OnCardReceived(int cardValue)
+    {
+        if (!areEyesOpen)
+        {
+            CardAudioFeedback.Instance.PlayCardRangeSound(cardValue);
+        }
+    }
+
 }
 
